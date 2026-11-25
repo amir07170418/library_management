@@ -1,9 +1,15 @@
 package org.example.library_management.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserRequest {
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String phoneNumber;
+    @NotBlank
     private String nationalId;
 
     public UserRequest(String firstName, String lastName, String phoneNumber, String nationalId) {
