@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -22,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
-    private UserResponse save(UserRequest userRequest) {
+    public UserResponse save(UserRequest userRequest) {
         if (!userRepository.existsByNationalId(userRequest.getNationalId())) {
             throw new LibraryException(HttpStatus.NOT_FOUND, "User with NationalId " + userRequest.getNationalId() + " not found");
         }
@@ -30,18 +28,18 @@ public class UserService {
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
-    private UserResponse update(String nationalId,UserRequest userRequest) {
+    public UserResponse update(String nationalId,UserRequest userRequest) {
         User user = userRepository.findByNationalId(nationalId).orElseThrow(() -> new LibraryException
                 (HttpStatus.NOT_FOUND, "User With NationalId " + nationalId + " not found"));
         userMapper.updateUser(userRequest, user);
         return userMapper.toUserResponse(user);
     }
-    private UserResponse findByNationalId(String nationalId) {
+    public UserResponse findByNationalId(String nationalId) {
         User user = userRepository.findByNationalId(nationalId).orElseThrow(()->new LibraryException
                 (HttpStatus.NOT_FOUND,"User with NationalId " + nationalId+ " not found"));
         return userMapper.toUserResponse(user);
     }
-    private Page<UserResponse> findAll(Pageable pageable) {
+    public Page<UserResponse> findAll(Pageable pageable) {
         return userRepository.findAll(pageable).map(userMapper::toUserResponse);
     }
 
