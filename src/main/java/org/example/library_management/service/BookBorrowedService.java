@@ -3,8 +3,10 @@ package org.example.library_management.service;
 import jakarta.transaction.Transactional;
 import org.example.library_management.dto.BookBorrowedRequest;
 import org.example.library_management.dto.BookBorrowedResponse;
+import org.example.library_management.dto.BookResponse;
 import org.example.library_management.exception.LibraryException;
 import org.example.library_management.mapper.BookBorrowedMapper;
+import org.example.library_management.mapper.BookMapper;
 import org.example.library_management.model.Book;
 import org.example.library_management.model.BookBorrowed;
 import org.example.library_management.model.BookStatus;
@@ -25,12 +27,14 @@ public class BookBorrowedService {
     private final BookBorrowedMapper bookBorrowedMapper;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final BookMapper bookMapper;
 
-    public BookBorrowedService(BookBorrowedRepository bookBorrowedRepository, BookBorrowedMapper bookBorrowedMapper, BookRepository bookRepository, UserRepository userRepository) {
+    public BookBorrowedService(BookBorrowedRepository bookBorrowedRepository, BookBorrowedMapper bookBorrowedMapper, BookRepository bookRepository, UserRepository userRepository, BookMapper bookMapper) {
         this.bookBorrowedRepository = bookBorrowedRepository;
         this.bookBorrowedMapper = bookBorrowedMapper;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
+        this.bookMapper = bookMapper;
     }
 
     @Transactional
@@ -69,8 +73,8 @@ public class BookBorrowedService {
         return bookBorrowedMapper.toBookBorrowedResponse(bookBorrowed);
     }
 
-    public Page<Book> searchBooks(String title, String author, Integer year, Boolean available, Pageable pageable) {
-        return bookRepository.searchBooks(title, author, year, available, pageable);
+    public Page<BookResponse> searchBooks(String title, String author, Integer year, Boolean available, Pageable pageable) {
+        return bookRepository.searchBooks(title, author, year, available, pageable).map(bookMapper::toBookResponse);
     }
 
 }
