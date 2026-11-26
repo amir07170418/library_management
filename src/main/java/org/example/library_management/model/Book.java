@@ -12,7 +12,6 @@ public class Book {
     private Long id;
     private String title;
     private String author;
-    @Column(unique = true)
     private String isbn;
     private Integer publishYear;
     @Enumerated(EnumType.STRING)
