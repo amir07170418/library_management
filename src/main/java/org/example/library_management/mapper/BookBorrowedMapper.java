@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BookBorrowedMapper {
-    @Mapping(source = "book.isbn",target = "isbn")
-    @Mapping(source = "user.nationalId",target = "nationalId")
+    @Mapping(source = "book.isbn", target = "isbn")
+    @Mapping(source = "user.nationalId", target = "nationalId")
     BookBorrowedResponse toBookBorrowedResponse(Book book);
 }
