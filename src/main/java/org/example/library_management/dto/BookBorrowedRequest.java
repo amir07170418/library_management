@@ -4,24 +4,24 @@ import jakarta.validation.constraints.NotBlank;
 
 public class BookBorrowedRequest {
     @NotBlank
-    private String isbn;
+    private Long bookId;
     @NotBlank
     private String nationalId;
 
-    public BookBorrowedRequest(String isbn, String nationalId) {
-        this.isbn = isbn;
+    public BookBorrowedRequest(Long bookId, String nationalId) {
+        this.bookId = bookId;
         this.nationalId = nationalId;
     }
 
     public BookBorrowedRequest() {
     }
 
-    public String getIsbn() {
-        return isbn;
+    public Long getBookId() {
+        return bookId;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
     }
 
     public String getNationalId() {
@@ -35,7 +35,7 @@ public class BookBorrowedRequest {
     @Override
     public String toString() {
         return "BookBorrowedRequest{" +
-                "isbn='" + isbn + '\'' +
+                "bookId='" + bookId + '\'' +
                 ", nationalId='" + nationalId + '\'' +
                 '}';
     }
