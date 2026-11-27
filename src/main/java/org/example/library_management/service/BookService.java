@@ -65,5 +65,8 @@ public class BookService {
         }
         return bookRepository.findAll(pageable).map(bookMapper::toBookResponse);
     }
+    public Page<BookResponse> searchBooks(String title, String author, Integer year, Boolean available, Pageable pageable) {
+        return bookRepository.searchBooks(title, author, year, available, pageable).map(bookMapper::toBookResponse);
+    }
 
 }

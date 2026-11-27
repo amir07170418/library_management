@@ -25,14 +25,4 @@ public class BookBorrowedController {
     public BookBorrowedResponse returnBook(@PathVariable Long bookId, @RequestParam String nationalId){
         return bookBorrowedService.returnBookBorrowed(bookId, nationalId);
     }
-    @GetMapping("/search")
-    public  Page<BookResponse> searchBooks(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String author,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Boolean available,
-            Pageable pageable
-    ) {
-        return bookBorrowedService.searchBooks(title, author, year, available, pageable);
-    }
 }

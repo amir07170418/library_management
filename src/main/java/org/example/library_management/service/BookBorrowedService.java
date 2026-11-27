@@ -27,14 +27,14 @@ public class BookBorrowedService {
     private final BookBorrowedMapper bookBorrowedMapper;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final BookMapper bookMapper;
 
-    public BookBorrowedService(BookBorrowedRepository bookBorrowedRepository, BookBorrowedMapper bookBorrowedMapper, BookRepository bookRepository, UserRepository userRepository, BookMapper bookMapper) {
+    public BookBorrowedService(BookBorrowedRepository bookBorrowedRepository, BookBorrowedMapper bookBorrowedMapper
+            , BookRepository bookRepository, UserRepository userRepository) {
         this.bookBorrowedRepository = bookBorrowedRepository;
         this.bookBorrowedMapper = bookBorrowedMapper;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.bookMapper = bookMapper;
+
     }
 
     @Transactional
@@ -73,8 +73,5 @@ public class BookBorrowedService {
         return bookBorrowedMapper.toBookBorrowedResponse(bookBorrowed);
     }
 
-    public Page<BookResponse> searchBooks(String title, String author, Integer year, Boolean available, Pageable pageable) {
-        return bookRepository.searchBooks(title, author, year, available, pageable).map(bookMapper::toBookResponse);
-    }
 
 }

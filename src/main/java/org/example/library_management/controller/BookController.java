@@ -6,6 +6,7 @@ import org.example.library_management.dto.BookResponse;
 import org.example.library_management.dto.BookUpdate;
 import org.example.library_management.service.BookService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,5 +45,15 @@ public class BookController {
     @PatchMapping("/{id}")
     public void deActivateBook(@PathVariable Long id) {
         bookService.deActivate(id);
+    }
+    @GetMapping("/search")
+    public  Page<BookResponse> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Boolean available,
+            Pageable pageable
+    ) {
+        return bookService.searchBooks(title, author, year, available, pageable);
     }
 }
