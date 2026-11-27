@@ -1,13 +1,13 @@
 package org.example.library_management.dto;
 
 public class UserResponse {
-    private int id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String nationalId;
 
-    public UserResponse(int id, String firstName, String lastName, String phoneNumber, String nationalId) {
+    public UserResponse(Long id, String firstName, String lastName, String phoneNumber, String nationalId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -16,11 +16,11 @@ public class UserResponse {
     }
     public UserResponse() {}
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
