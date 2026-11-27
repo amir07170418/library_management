@@ -112,12 +112,19 @@ cd library_management
 
                                   
  controller  = دریافت درخواست‌ها و مدیریت APIها  
+ 
  service    = پیاده‌سازی منطق کسب‌وکار          
- repository = ارتباط با دیتابیس                 
- model      = تعریف Entityهای پروژه             
+ 
+ repository = ارتباط با دیتابیس              
+ 
+ model      = تعریف Entityهای پروژه      
+ 
  dto        = تعریف کلاس‌های Request و Response 
+ 
  mapper     = تبدیل Entityها به DTO و برعکس     
- exception  = مدیریت خطاها و Exceptionها       
+ 
+ exception  = مدیریت خطاها و Exceptionها    
+ 
 
 
 ## امکانات پروژه
@@ -156,28 +163,43 @@ cd library_management
 ### کتاب‌ها
 
 
-| POST  | `/books`             | ثبت کتاب جدید         
+| POST  | `/books`             | ثبت کتاب جدید      
+
 | GET   | `/books`             | دریافت لیست کتاب‌ها   
+
 | GET   | `/books/{id}`        | دریافت کتاب با شناسه  
-| GET   | `/books/isbn/{isbn}` | جستجو بر اساس ISBN    
+
+| GET   | `/books/isbn/{isbn}` | جستجو بر اساس ISBN   
+
 | PUT   | `/books/{id}`        | ویرایش اطلاعات کتاب  
-| PATCH | `/books/{id}`        | غیرفعال کردن کتاب     
+
+| PATCH | `/books/{id}`        | غیرفعال کردن کتاب    
+
 | GET   | `/books/search`      | جستجو و فیلتر کتاب‌ها 
+
 
 ### کاربران
 
 
+
 | POST | `/users`              | ثبت کاربر جدید      |
+
 | GET  | `/users`              | دریافت لیست کاربران  |
+
 | GET  | `/users/{nationalId}` | دریافت اطلاعات کاربر |
+
 | PUT  | `/users/{nationalId}` | ویرایش اطلاعات کاربر |
+
 
 
 ### امانت کتاب
 
 
+
 | POST  | `/book-borrowings`                 | ثبت امانت کتاب  |
+
 | PATCH | `/book-borrowings/{bookId}/return` | ثبت بازگشت کتاب |
+
 
 
 ## تصمیمات طراحی
@@ -197,8 +219,11 @@ cd library_management
 به همین دلیل برای کتاب‌ها سه وضعیت در نظر گرفتم:
 
 - `AVAILABLE`: کتاب قابل امانت است.
+
 - `BORROWED`: کتاب در حال امانت است.
+
 - `DEACTIVATED`: کتاب غیرفعال شده است.
+
 
 همچنین اجازه غیرفعال کردن کتابی که در حال حاضر امانت داده شده است وجود ندارد.
 
