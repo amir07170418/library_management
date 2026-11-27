@@ -109,7 +109,8 @@ cd library_management
 ## ساختار پروژه
 
 پروژه به چند بخش اصلی تقسیم شده است:
-                                    |
+
+                                  
  controller  = دریافت درخواست‌ها و مدیریت APIها  
  service    = پیاده‌سازی منطق کسب‌وکار          
  repository = ارتباط با دیتابیس                 
@@ -117,6 +118,7 @@ cd library_management
  dto        = تعریف کلاس‌های Request و Response 
  mapper     = تبدیل Entityها به DTO و برعکس     
  exception  = مدیریت خطاها و Exceptionها       
+
 
 ## امکانات پروژه
 
@@ -150,6 +152,7 @@ cd library_management
 
 ## APIهای پروژه
 
+
 ### کتاب‌ها
 
 
@@ -164,16 +167,18 @@ cd library_management
 ### کاربران
 
 
-| POST | `/users`              | ثبت کاربر جدید       |
+| POST | `/users`              | ثبت کاربر جدید      |
 | GET  | `/users`              | دریافت لیست کاربران  |
 | GET  | `/users/{nationalId}` | دریافت اطلاعات کاربر |
 | PUT  | `/users/{nationalId}` | ویرایش اطلاعات کاربر |
 
+
 ### امانت کتاب
 
-| ----- | ---------------------------------- | --------------- |
+
 | POST  | `/book-borrowings`                 | ثبت امانت کتاب  |
 | PATCH | `/book-borrowings/{bookId}/return` | ثبت بازگشت کتاب |
+
 
 ## تصمیمات طراحی
 
