@@ -4,18 +4,19 @@ import java.time.LocalDate;
 
 public class BookBorrowedResponse {
     private Long id;
-    private String isbn;
+    private Long bookId;
     private String nationalId;
     private LocalDate borrowStart;
     private LocalDate borrowEnd;
 
-    public BookBorrowedResponse(Long id, String isbn, String nationalId, LocalDate borrowStart, LocalDate borrowEnd) {
+    public BookBorrowedResponse(Long id, Long bookId, String nationalId, LocalDate borrowStart, LocalDate borrowEnd) {
         this.id = id;
-        this.isbn = isbn;
+        this.bookId = bookId;
         this.nationalId = nationalId;
         this.borrowStart = borrowStart;
         this.borrowEnd = borrowEnd;
     }
+
 
     public Long getId() {
         return id;
@@ -28,12 +29,12 @@ public class BookBorrowedResponse {
     public BookBorrowedResponse() {
     }
 
-    public String getIsbn() {
-        return isbn;
+    public Long getBookId() {
+        return bookId;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
     }
 
     public String getNationalId() {
@@ -64,7 +65,7 @@ public class BookBorrowedResponse {
     public String toString() {
         return "BookBorrowedResponse{" +
                 "id=" + id +
-                ", isbn='" + isbn + '\'' +
+                ", bookId='" + bookId + '\'' +
                 ", nationalId='" + nationalId + '\'' +
                 ", borrowStart=" + borrowStart +
                 ", borrowEnd=" + borrowEnd +
