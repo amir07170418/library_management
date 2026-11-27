@@ -56,4 +56,9 @@ public class BookController {
     ) {
         return bookService.searchBooks(title, author, year, available, pageable);
     }
+    @DeleteMapping("/{id}")
+    public void deleteBook(@PathVariable Long id) {
+        bookService.deActivate(id);
+    }
+
 }
