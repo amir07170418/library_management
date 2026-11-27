@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -64,9 +65,9 @@ class BookServiceTest {
     void update() {
         Long id = 1L;
 
-        BookUpdate update = new BookUpdate("java","ghomi",1400);
+        BookUpdate update = new BookUpdate("java","Akbari",1400);
         Book book = new Book(1L,"java","ghomi","12235489",1400,BookStatus.AVAILABLE,null);
-        BookResponse expectedResponse = new BookResponse(1L,"java","ghomi"
+        BookResponse expectedResponse = new BookResponse(1L,"java","Akbari"
                 ,"12235489",1400,BookStatus.AVAILABLE);
 
 
@@ -223,6 +224,38 @@ class BookServiceTest {
 
         verify(bookRepository).findByTitleContainingIgnoreCase(eq(title), any(Pageable.class));
 
+        verify(bookMapper).toBookResponse(book);
+    }
+    @Test
+    void searchBooks() {
+
+        String title = "Java";
+        String author = "John";
+        String isbn = "1234567890";
+        Integer year = 2024;
+        Boolean available = true;
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle(title);
+
+        BookResponse expectedResponse = new BookResponse(1L, title, author, isbn, year, BookStatus.AVAILABLE);
+
+        Page<Book> bookPage = new PageImpl<>(List.of(book));
+
+        when(bookRepository.searchBooks(title, author, year, available, pageable)).thenReturn(bookPage);
+
+        when(bookMapper.toBookResponse(book)).thenReturn(expectedResponse);
+
+        Page<BookResponse> result = bookService.searchBooks(title, author, year, available, pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(title, result.getContent().get(0).getTitle());
+
+        verify(bookRepository).searchBooks(title, author, year, available, pageable);
         verify(bookMapper).toBookResponse(book);
     }
 }

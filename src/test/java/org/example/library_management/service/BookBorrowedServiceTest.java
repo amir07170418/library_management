@@ -3,6 +3,7 @@ package org.example.library_management.service;
 import org.example.library_management.dto.BookBorrowedRequest;
 import org.example.library_management.dto.BookBorrowedResponse;
 import org.example.library_management.dto.BookResponse;
+import org.example.library_management.exception.LibraryException;
 import org.example.library_management.mapper.BookBorrowedMapper;
 import org.example.library_management.mapper.BookMapper;
 import org.example.library_management.model.Book;
@@ -26,11 +27,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookBorrowedServiceTest {
@@ -83,6 +82,41 @@ class BookBorrowedServiceTest {
     }
 
     @Test
+    void createBookBorrowed_whenBookNotFound() {
+
+        Long bookId = 1L;
+        String nationalId = "1234567890";
+
+        BookBorrowedRequest request = new BookBorrowedRequest(bookId, nationalId);
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.empty());
+
+        assertThrows(LibraryException.class, () -> bookBorrowedService.createBookBorrowed(request));
+
+        verify(bookBorrowedRepository, never()).save(any(BookBorrowed.class));
+    }
+
+    @Test
+    void createBookBorrowed_whenUserNotFound() {
+
+        Long bookId = 1L;
+        String nationalId = "1234567890";
+
+        Book book = new Book();
+        book.setId(bookId);
+        book.setStatus(BookStatus.AVAILABLE);
+
+        BookBorrowedRequest request = new BookBorrowedRequest(bookId, nationalId);
+
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(userRepository.findByNationalId(nationalId)).thenReturn(Optional.empty());
+
+        assertThrows(LibraryException.class, () -> bookBorrowedService.createBookBorrowed(request));
+
+        verify(bookBorrowedRepository, never()).save(any(BookBorrowed.class));
+    }
+
+    @Test
     void returnBookBorrowed() {
         Long bookId = 1L;
         String nationalId = "1234567890";
@@ -110,38 +144,5 @@ class BookBorrowedServiceTest {
         verify(bookBorrowedRepository).save(any(BookBorrowed.class));
         assertNotNull(bookBorrowed.getBorrowEnd());
 
-    }
-
-    @Test
-    void searchBooks() {
-
-        String title = "Java";
-        String author = "John";
-        String isbn = "1234567890";
-        Integer year = 2024;
-        Boolean available = true;
-
-        Pageable pageable = PageRequest.of(0, 10);
-
-        Book book = new Book();
-        book.setId(1L);
-        book.setTitle(title);
-
-        BookResponse expectedResponse = new BookResponse(1L, title, author, isbn, year, BookStatus.AVAILABLE);
-
-        Page<Book> bookPage = new PageImpl<>(List.of(book));
-
-        when(bookRepository.searchBooks(title, author, year, available, pageable)).thenReturn(bookPage);
-
-        when(bookMapper.toBookResponse(book)).thenReturn(expectedResponse);
-
-        Page<BookResponse> result = bookBorrowedService.searchBooks(title, author, year, available, pageable);
-
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(title, result.getContent().get(0).getTitle());
-
-        verify(bookRepository).searchBooks(title, author, year, available, pageable);
-        verify(bookMapper).toBookResponse(book);
     }
 }
