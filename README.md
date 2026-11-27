@@ -45,7 +45,9 @@ CREATE DATABASE library;
 spring.application.name=library_management
 
 spring.datasource.url=jdbc:mysql://localhost:3306/library 
+
 spring.datasource.username=root 
+
 spring.datasource.password=your_password 
 
 spring.jpa.hibernate.ddl-auto=update
