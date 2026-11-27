@@ -2,6 +2,7 @@ package org.example.library_management.mapper;
 
 import org.example.library_management.dto.UserRequest;
 import org.example.library_management.dto.UserResponse;
+import org.example.library_management.dto.UserUpdate;
 import org.example.library_management.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,5 +14,5 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     User toUser(UserRequest userRequest);
     @Mapping(target = "id", ignore = true)
-    User updateUser(UserRequest userRequest, @MappingTarget User user);
+    User updateUser(UserUpdate userUpdate, @MappingTarget User user);
 }

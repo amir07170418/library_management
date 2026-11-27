@@ -2,6 +2,7 @@ package org.example.library_management.service;
 
 import org.example.library_management.dto.UserRequest;
 import org.example.library_management.dto.UserResponse;
+import org.example.library_management.dto.UserUpdate;
 import org.example.library_management.mapper.UserMapper;
 import org.example.library_management.model.User;
 import org.example.library_management.repository.UserRepository;
@@ -48,15 +49,14 @@ class UserServiceTest {
     void update() {
         User user = new User(1L,"Hossein","Ahmadi","09955654785"
                 ,"6880174523",null);
-        UserRequest userRequest = new UserRequest("Hossein","Akbari","09955654785"
-                ,"6880174523");
+        UserUpdate userUpdate =new UserUpdate("Hossein","Akbari","09955654785");
         UserResponse userResponse = new UserResponse(1L,"Hossein","Akbari","09955654785"
                 ,"6880174523");
         when(userRepository.findByNationalId("6880174523")).thenReturn(Optional.of(user));
-        when(userMapper.updateUser(userRequest,user)).thenReturn(user);
+        when(userMapper.updateUser(userUpdate,user)).thenReturn(user);
         when(userMapper.toUserResponse(user)).thenReturn(userResponse);
 
-        UserResponse result=userService.update("6880174523",userRequest);
+        UserResponse result=userService.update("6880174523",userUpdate);
         assertEquals(userResponse,result);
 
         verify(userRepository).findByNationalId("6880174523");

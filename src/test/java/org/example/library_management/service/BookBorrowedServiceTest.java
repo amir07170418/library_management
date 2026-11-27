@@ -96,7 +96,7 @@ class BookBorrowedServiceTest {
 
         BookBorrowed bookBorrowed = new BookBorrowed(1L, book, user, LocalDate.now(), null);
         BookBorrowedResponse response = new BookBorrowedResponse(1L, bookId, nationalId, LocalDate.now(), LocalDate.now());
-        when(bookBorrowedRepository.findByBookAndStatus(bookId, nationalId)).thenReturn(Optional.of(bookBorrowed));
+        when(bookBorrowedRepository.findActiveBorrowingByBookIdAndNationalId(bookId, nationalId)).thenReturn(Optional.of(bookBorrowed));
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         when(userRepository.findByNationalId(nationalId)).thenReturn(Optional.of(user));
         when(bookBorrowedMapper.toBookBorrowedResponse(any(BookBorrowed.class))).thenReturn(response);
@@ -106,7 +106,7 @@ class BookBorrowedServiceTest {
 
         assertEquals(response.getBorrowEnd(), result.getBorrowEnd());
         assertEquals(BookStatus.AVAILABLE, book.getStatus());
-        verify(bookBorrowedRepository).findByBookAndStatus(bookId, nationalId);
+        verify(bookBorrowedRepository).findActiveBorrowingByBookIdAndNationalId(bookId, nationalId);
         verify(bookBorrowedRepository).save(any(BookBorrowed.class));
         assertNotNull(bookBorrowed.getBorrowEnd());
 

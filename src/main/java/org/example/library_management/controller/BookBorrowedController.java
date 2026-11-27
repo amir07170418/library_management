@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/BookBorroweds")
+@RequestMapping("/book-borrowings")
 public class BookBorrowedController {
     private final BookBorrowedService bookBorrowedService;
 

@@ -3,6 +3,7 @@ package org.example.library_management.controller;
 import jakarta.validation.Valid;
 import org.example.library_management.dto.UserRequest;
 import org.example.library_management.dto.UserResponse;
+import org.example.library_management.dto.UserUpdate;
 import org.example.library_management.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +27,8 @@ public class UserController {
         return userService.findByNationalId(nationalId);
     }
     @PutMapping("/{nationalId}")
-    public UserResponse updateUser(@PathVariable String nationalId, @Valid @RequestBody UserRequest userRequest) {
-        return userService.update(nationalId, userRequest);
+    public UserResponse updateUser(@PathVariable String nationalId, @Valid @RequestBody UserUpdate userUpdate) {
+        return userService.update(nationalId, userUpdate);
     }
     @GetMapping
     public Page<UserResponse> getUsers(@PageableDefault(size = 10) Pageable pageable ) {

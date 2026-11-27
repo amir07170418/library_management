@@ -2,9 +2,11 @@ package org.example.library_management.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class BookBorrowedRequest {
     @NotNull
+    @Positive
     private Long bookId;
     @NotBlank
     private String nationalId;

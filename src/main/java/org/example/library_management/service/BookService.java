@@ -34,7 +34,7 @@ public class BookService {
         return bookMapper.toBookResponse(book);
     }
     @Transactional
-    public BookResponse Update(Long id,BookUpdate bookUpdate) {
+    public BookResponse update(Long id, BookUpdate bookUpdate) {
         Book book = bookRepository.findById(id).orElseThrow(()->new LibraryException(HttpStatus.NOT_FOUND, "Book not found"));
         bookMapper.updateBook(bookUpdate,book);
         bookRepository.save(book);

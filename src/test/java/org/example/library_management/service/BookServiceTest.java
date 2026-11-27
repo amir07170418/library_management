@@ -73,7 +73,7 @@ class BookServiceTest {
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookMapper.toBookResponse(book)).thenReturn(expectedResponse);
 
-        BookResponse result = bookService.Update(id, update);
+        BookResponse result = bookService.update(id, update);
 
         assertNotNull(result);
         assertEquals(expectedResponse, result);

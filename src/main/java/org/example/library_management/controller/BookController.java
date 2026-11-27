@@ -39,7 +39,7 @@ public class BookController {
     }
     @PutMapping("/{id}")
     public BookResponse updateBook(@PathVariable Long id, @Valid @RequestBody BookUpdate bookUpdate) {
-        return bookService.Update(id, bookUpdate);
+        return bookService.update(id, bookUpdate);
     }
     @PatchMapping("/{id}")
     public void deActivateBook(@PathVariable Long id) {

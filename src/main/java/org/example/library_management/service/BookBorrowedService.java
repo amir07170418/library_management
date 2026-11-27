@@ -64,7 +64,7 @@ public class BookBorrowedService {
             throw new LibraryException(HttpStatus.BAD_REQUEST, "book is not borrowed");
         }
         User user = userRepository.findByNationalId(nationalId).orElseThrow(() -> new LibraryException(HttpStatus.NOT_FOUND, "user not found"));
-        BookBorrowed bookBorrowed = bookBorrowedRepository.findByBookAndStatus(bookId, nationalId).orElseThrow
+        BookBorrowed bookBorrowed = bookBorrowedRepository.findActiveBorrowingByBookIdAndNationalId(bookId, nationalId).orElseThrow
                 (() -> new LibraryException(HttpStatus.NOT_FOUND, "bookBorrowed not found"));
         bookBorrowed.setBorrowEnd(LocalDate.now());
         book.setStatus(BookStatus.AVAILABLE);

@@ -3,6 +3,7 @@ package org.example.library_management.service;
 import jakarta.transaction.Transactional;
 import org.example.library_management.dto.UserRequest;
 import org.example.library_management.dto.UserResponse;
+import org.example.library_management.dto.UserUpdate;
 import org.example.library_management.exception.LibraryException;
 import org.example.library_management.mapper.UserMapper;
 import org.example.library_management.model.User;
@@ -30,10 +31,10 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
     @Transactional
-    public UserResponse update(String nationalId,UserRequest userRequest) {
+    public UserResponse update(String nationalId, UserUpdate userUpdate) {
         User user = userRepository.findByNationalId(nationalId).orElseThrow(() -> new LibraryException
                 (HttpStatus.NOT_FOUND, "User With NationalId " + nationalId + " not found"));
-        userMapper.updateUser(userRequest, user);
+        userMapper.updateUser(userUpdate, user);
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }

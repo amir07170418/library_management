@@ -1,5 +1,7 @@
 package org.example.library_management.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,6 +13,8 @@ public class BookRequest {
     @NotBlank
     private String isbn;
     @NotNull
+    @Min(1000)
+    @Max(2100)
     private Integer publishYear;
 
     public BookRequest(String title, String author, String isbn, Integer publishYear) {
