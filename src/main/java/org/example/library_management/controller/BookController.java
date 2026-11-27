@@ -8,6 +8,8 @@ import org.example.library_management.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -27,12 +29,12 @@ public class BookController {
     ) {
         return bookService.findAll(page, size, sortBy, direction, title);
     }
-    @GetMapping("/byId/{id}")
+    @GetMapping("/{id}")
     public BookResponse findBookById(@PathVariable Long id) {
         return bookService.findById(id);
     }
-    @GetMapping("/byIsbn/{isbn}")
-    public BookResponse findBookByIsbn(@PathVariable String isbn) {
+    @GetMapping("/isbn/{isbn}")
+    public List<BookResponse> findBookByIsbn(@PathVariable String isbn) {
         return bookService.findByIsbn(isbn);
     }
     @PutMapping("/{id}")

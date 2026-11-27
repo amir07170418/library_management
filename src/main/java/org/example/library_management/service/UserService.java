@@ -1,5 +1,6 @@
 package org.example.library_management.service;
 
+import jakarta.transaction.Transactional;
 import org.example.library_management.dto.UserRequest;
 import org.example.library_management.dto.UserResponse;
 import org.example.library_management.exception.LibraryException;
@@ -21,17 +22,19 @@ public class UserService {
         this.userMapper = userMapper;
     }
     public UserResponse save(UserRequest userRequest) {
-        if (!userRepository.existsByNationalId(userRequest.getNationalId())) {
-            throw new LibraryException(HttpStatus.NOT_FOUND, "User with NationalId " + userRequest.getNationalId() + " not found");
+        if (userRepository.existsByNationalId(userRequest.getNationalId())) {
+            throw new LibraryException(HttpStatus.BAD_REQUEST, "User with NationalId " + userRequest.getNationalId() + " exist");
         }
         User user = userMapper.toUser(userRequest);
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
+    @Transactional
     public UserResponse update(String nationalId,UserRequest userRequest) {
         User user = userRepository.findByNationalId(nationalId).orElseThrow(() -> new LibraryException
                 (HttpStatus.NOT_FOUND, "User With NationalId " + nationalId + " not found"));
         userMapper.updateUser(userRequest, user);
+        userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
     public UserResponse findByNationalId(String nationalId) {

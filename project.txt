@@ -1,0 +1,1358 @@
+===== C:\desc\demo\library_management\.mvn\wrapper\maven-wrapper.properties =====
+wrapperVersion=3.3.4
+distributionType=only-script
+distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.10.1/apache-maven-3.10.1-bin.zip
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\controller\BookBorrowedController.java =====
+package org.example.library_management.controller;
+
+import jakarta.validation.Valid;
+import org.example.library_management.dto.BookBorrowedRequest;
+import org.example.library_management.dto.BookBorrowedResponse;
+import org.example.library_management.dto.BookResponse;
+import org.example.library_management.service.BookBorrowedService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/BookBorroweds")
+public class BookBorrowedController {
+    private final BookBorrowedService bookBorrowedService;
+
+    public BookBorrowedController(BookBorrowedService bookBorrowedService) {
+        this.bookBorrowedService = bookBorrowedService;
+    }
+    @PostMapping
+    public BookBorrowedResponse save(@Valid @RequestBody BookBorrowedRequest bookBorrowedRequest){
+        return bookBorrowedService.createBookBorrowed(bookBorrowedRequest);
+    }
+    @PatchMapping("/{bookId}/return")
+    public BookBorrowedResponse returnBook(@PathVariable Long bookId, @RequestParam String nationalId){
+        return bookBorrowedService.returnBookBorrowed(bookId, nationalId);
+    }
+    @GetMapping("/search")
+    public  Page<BookResponse> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Boolean available,
+            Pageable pageable
+    ) {
+        return bookBorrowedService.searchBooks(title, author, year, available, pageable);
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\controller\BookController.java =====
+package org.example.library_management.controller;
+
+import jakarta.validation.Valid;
+import org.example.library_management.dto.BookRequest;
+import org.example.library_management.dto.BookResponse;
+import org.example.library_management.dto.BookUpdate;
+import org.example.library_management.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/books")
+public class BookController {
+    private final BookService bookService;
+
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
+    @PostMapping
+    public BookResponse saveBook(@Valid @RequestBody BookRequest bookRequest) {
+        return bookService.save(bookRequest);
+    }
+    @GetMapping
+    public Page<BookResponse> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String title
+    ) {
+        return bookService.findAll(page, size, sortBy, direction, title);
+    }
+    @GetMapping("/{id}")
+    public BookResponse findBookById(@PathVariable Long id) {
+        return bookService.findById(id);
+    }
+    @GetMapping("/isbn/{isbn}")
+    public List<BookResponse> findBookByIsbn(@PathVariable String isbn) {
+        return bookService.findByIsbn(isbn);
+    }
+    @PutMapping("/{id}")
+    public BookResponse updateBook(@PathVariable Long id, @Valid @RequestBody BookUpdate bookUpdate) {
+        return bookService.Update(id, bookUpdate);
+    }
+    @PatchMapping("/{id}")
+    public void deActivateBook(@PathVariable Long id) {
+        bookService.deActivate(id);
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\controller\UserController.java =====
+package org.example.library_management.controller;
+
+import jakarta.validation.Valid;
+import org.example.library_management.dto.UserRequest;
+import org.example.library_management.dto.UserResponse;
+import org.example.library_management.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+    @PostMapping
+    public UserResponse createUser(@Valid @RequestBody UserRequest userRequest) {
+        return userService.save(userRequest);
+    }
+    @GetMapping("/{nationalId}")
+    public UserResponse getUser(@PathVariable String nationalId) {
+        return userService.findByNationalId(nationalId);
+    }
+    @PutMapping("/{nationalId}")
+    public UserResponse updateUser(@PathVariable String nationalId, @Valid @RequestBody UserRequest userRequest) {
+        return userService.update(nationalId, userRequest);
+    }
+    @GetMapping
+    public Page<UserResponse> getUsers(@PageableDefault(size = 10) Pageable pageable ) {
+        return userService.findAll(pageable);
+    }
+
+
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\BookBorrowedRequest.java =====
+package org.example.library_management.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public class BookBorrowedRequest {
+    @NotNull
+    private Long bookId;
+    @NotBlank
+    private String nationalId;
+
+    public BookBorrowedRequest(Long bookId, String nationalId) {
+        this.bookId = bookId;
+        this.nationalId = nationalId;
+    }
+
+    public BookBorrowedRequest() {
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    @Override
+    public String toString() {
+        return "BookBorrowedRequest{" +
+                "bookId='" + bookId + '\'' +
+                ", nationalId='" + nationalId + '\'' +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\BookBorrowedResponse.java =====
+package org.example.library_management.dto;
+
+import java.time.LocalDate;
+
+public class BookBorrowedResponse {
+    private Long id;
+    private String isbn;
+    private String nationalId;
+    private LocalDate borrowStart;
+    private LocalDate borrowEnd;
+
+    public BookBorrowedResponse(Long id, String isbn, String nationalId, LocalDate borrowStart, LocalDate borrowEnd) {
+        this.id = id;
+        this.isbn = isbn;
+        this.nationalId = nationalId;
+        this.borrowStart = borrowStart;
+        this.borrowEnd = borrowEnd;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public BookBorrowedResponse() {
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    public LocalDate getBorrowStart() {
+        return borrowStart;
+    }
+
+    public void setBorrowStart(LocalDate borrowStart) {
+        this.borrowStart = borrowStart;
+    }
+
+    public LocalDate getBorrowEnd() {
+        return borrowEnd;
+    }
+
+    public void setBorrowEnd(LocalDate borrowEnd) {
+        this.borrowEnd = borrowEnd;
+    }
+
+    @Override
+    public String toString() {
+        return "BookBorrowedResponse{" +
+                "id=" + id +
+                ", isbn='" + isbn + '\'' +
+                ", nationalId='" + nationalId + '\'' +
+                ", borrowStart=" + borrowStart +
+                ", borrowEnd=" + borrowEnd +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\BookRequest.java =====
+package org.example.library_management.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public class BookRequest {
+    @NotBlank
+    private String title;
+    @NotBlank
+    private String author;
+    @NotBlank
+    private String isbn;
+    @NotNull
+    private Integer publishYear;
+
+    public BookRequest(String title, String author, String isbn, Integer publishYear) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.publishYear = publishYear;
+    }
+
+    public BookRequest() {
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public Integer getPublishYear() {
+        return publishYear;
+    }
+
+    public void setPublishYear(Integer publishYear) {
+        this.publishYear = publishYear;
+    }
+
+    @Override
+    public String toString() {
+        return "BookRequest{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", publishYear=" + publishYear +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\BookResponse.java =====
+package org.example.library_management.dto;
+
+import org.example.library_management.model.BookStatus;
+
+public class BookResponse {
+    private Long id;
+    private String title;
+    private String author;
+    private String isbn;
+    private Integer publishYear;
+    private BookStatus status;
+
+    public BookResponse(Long id, String title, String author, String isbn, Integer publishYear, BookStatus status) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.publishYear = publishYear;
+        this.status = status;
+    }
+    public BookResponse() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public Integer getPublishYear() {
+        return publishYear;
+    }
+
+    public void setPublishYear(Integer publishYear) {
+        this.publishYear = publishYear;
+    }
+
+    public BookStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "BookResponse{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", publishYear=" + publishYear +
+                ", status=" + status +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\BookUpdate.java =====
+package org.example.library_management.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public class BookUpdate {
+    @NotBlank
+    private String title;
+    @NotBlank
+    private String author;
+    @NotNull
+    private Integer publishYear;
+
+    public BookUpdate(String title, String author, Integer publishYear) {
+        this.title = title;
+        this.author = author;
+        this.publishYear = publishYear;
+    }
+
+    public BookUpdate() {
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Integer getPublishYear() {
+        return publishYear;
+    }
+
+    public void setPublishYear(Integer publishYear) {
+        this.publishYear = publishYear;
+    }
+
+    @Override
+    public String toString() {
+        return "BookUpdate{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", publishYear=" + publishYear +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\UserRequest.java =====
+package org.example.library_management.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public class UserRequest {
+    @NotBlank
+    private String firstName;
+    @NotBlank
+    private String lastName;
+    @NotBlank
+    private String phoneNumber;
+    @NotBlank
+    private String nationalId;
+
+    public UserRequest(String firstName, String lastName, String phoneNumber, String nationalId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.nationalId = nationalId;
+    }
+    public UserRequest() {}
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRequest{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", nationalId='" + nationalId + '\'' +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\dto\UserResponse.java =====
+package org.example.library_management.dto;
+
+public class UserResponse {
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    private String nationalId;
+
+    public UserResponse(int id, String firstName, String lastName, String phoneNumber, String nationalId) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.nationalId = nationalId;
+    }
+    public UserResponse() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    @Override
+    public String toString() {
+        return "UserResponse{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", nationalId='" + nationalId + '\'' +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\exception\ExceptionResponse.java =====
+package org.example.library_management.exception;
+
+import org.springframework.http.HttpStatus;
+
+import java.time.LocalDateTime;
+
+public class ExceptionResponse {
+    private HttpStatus status;
+    private String message;
+    private LocalDateTime time;
+
+    public ExceptionResponse(HttpStatus status, String message, LocalDateTime time) {
+        this.status = status;
+        this.message = message;
+        this.time = time;
+    }
+
+    public ExceptionResponse() {
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "ExceptionResponse{" +
+                "status=" + status +
+                ", message='" + message + '\'' +
+                ", time=" + time +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\exception\GlobalExceptionHandler.java =====
+package org.example.library_management.exception;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.time.LocalDateTime;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(LibraryException.class)
+    public ResponseEntity<ExceptionResponse> handleLibraryException(LibraryException libraryException) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setMessage(libraryException.getMessage());
+        exceptionResponse.setStatus(libraryException.getStatus());
+        exceptionResponse.setTime(LocalDateTime.now());
+        return ResponseEntity.status(libraryException.getStatus()).body(exceptionResponse);
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\exception\LibraryException.java =====
+package org.example.library_management.exception;
+
+import org.springframework.http.HttpStatus;
+
+public class LibraryException extends RuntimeException {
+    private final HttpStatus status;
+
+    public LibraryException(HttpStatus status, String message) {
+        super(message);
+        this.status = status;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\mapper\BookBorrowedMapper.java =====
+package org.example.library_management.mapper;
+
+import org.example.library_management.dto.BookBorrowedResponse;
+import org.example.library_management.model.BookBorrowed;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(componentModel = "spring")
+public interface BookBorrowedMapper {
+    @Mapping(source = "book.isbn", target = "isbn")
+    @Mapping(source = "user.nationalId", target = "nationalId")
+    BookBorrowedResponse toBookBorrowedResponse(BookBorrowed bookBorrowed);
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\mapper\BookMapper.java =====
+package org.example.library_management.mapper;
+
+import org.example.library_management.dto.BookRequest;
+import org.example.library_management.dto.BookResponse;
+import org.example.library_management.dto.BookUpdate;
+import org.example.library_management.model.Book;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+
+@Mapper(componentModel = "spring")
+public interface BookMapper {
+    BookResponse toBookResponse(Book book);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "borrowedBooks", ignore = true)
+    Book toBook(BookRequest bookRequest);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "borrowedBooks", ignore = true)
+    Book updateBook(BookUpdate bookUpdate, @MappingTarget Book book);
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\mapper\UserMapper.java =====
+package org.example.library_management.mapper;
+
+import org.example.library_management.dto.UserRequest;
+import org.example.library_management.dto.UserResponse;
+import org.example.library_management.model.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    UserResponse toUserResponse(User user);
+    @Mapping(target = "id", ignore = true)
+    User toUser(UserRequest userRequest);
+    @Mapping(target = "id", ignore = true)
+    User updateUser(UserRequest userRequest, @MappingTarget User user);
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\model\Book.java =====
+package org.example.library_management.model;
+
+import jakarta.persistence.*;
+
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
+public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    private String author;
+    private String isbn;
+    private Integer publishYear;
+    @Enumerated(EnumType.STRING)
+    private BookStatus status;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "book")
+    private Set<BookBorrowed> borrowedBooks;
+
+    public Book(Long id, String title, String author, String isbn, Integer publishYear
+            , BookStatus status, Set<BookBorrowed> borrowedBooks) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.publishYear = publishYear;
+        this.status = status;
+        this.borrowedBooks = borrowedBooks;
+    }
+
+    public Book() {
+    }
+
+    public Set<BookBorrowed> getBorrowedBooks() {
+        return borrowedBooks;
+    }
+
+    public void setBorrowedBooks(Set<BookBorrowed> borrowedBooks) {
+        this.borrowedBooks = borrowedBooks;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public Integer getPublishYear() {
+        return publishYear;
+    }
+
+    public void setPublishYear(Integer publishYear) {
+        this.publishYear = publishYear;
+    }
+
+    public BookStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", publishYear=" + publishYear +
+                ", status=" + status +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\model\BookBorrowed.java =====
+package org.example.library_management.model;
+
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
+
+@Entity
+public class BookBorrowed {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    private LocalDate borrowStart;
+    private LocalDate borrowEnd;
+
+    public BookBorrowed(Long id, Book book, User user, LocalDate borrowStart, LocalDate borrowEnd) {
+        this.id = id;
+        this.book = book;
+        this.user = user;
+        this.borrowStart = borrowStart;
+        this.borrowEnd = borrowEnd;
+    }
+
+    public BookBorrowed() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDate getBorrowStart() {
+        return borrowStart;
+    }
+
+    public void setBorrowStart(LocalDate borrowStart) {
+        this.borrowStart = borrowStart;
+    }
+
+    public LocalDate getBorrowEnd() {
+        return borrowEnd;
+    }
+
+    public void setBorrowEnd(LocalDate borrowEnd) {
+        this.borrowEnd = borrowEnd;
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\model\BookStatus.java =====
+package org.example.library_management.model;
+
+public enum BookStatus {
+    AVAILABLE,
+    BORROWED,
+    DEACTIVATED
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\model\User.java =====
+package org.example.library_management.model;
+
+import jakarta.persistence.*;
+
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    @Column(unique = true)
+    private String nationalId;
+    @OneToMany(fetch =  FetchType.LAZY,mappedBy = "user")
+    private Set<BookBorrowed> borrowedBooks;
+
+    public User(Long id, String firstName, String lastName, String phoneNumber, String nationalId
+            , Set<BookBorrowed> borrowedBooks) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.nationalId = nationalId;
+        this.borrowedBooks = borrowedBooks;
+    }
+
+    public User() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getNationalId() {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(nationalId, user.nationalId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nationalId);
+    }
+
+    @Override
+    public String toString() {
+        return "user{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", nationalId='" + nationalId + '\'' +
+                '}';
+    }
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\repository\BookBorrowedRepository.java =====
+package org.example.library_management.repository;
+
+import org.example.library_management.model.Book;
+import org.example.library_management.model.BookBorrowed;
+import org.example.library_management.model.BookStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface BookBorrowedRepository extends JpaRepository<BookBorrowed, Long> {
+    @Query("select b FROM BookBorrowed b where b.book.id=:bookId AND " +
+            ".book.status=org.example.library_management.model.BookStatus.BORROWED AND b.user.nationalId=:nationalId")
+    Optional<BookBorrowed> findByBookAndStatus(@Param("bookId") Long bookId,@Param("nationalId")  String nationalId);
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\repository\BookRepository.java =====
+package org.example.library_management.repository;
+
+import org.example.library_management.model.Book;
+import org.example.library_management.model.BookStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+    Page<Book> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    List<Book> findByIsbn(String isbn);
+    @Query("""
+            SELECT b FROM Book b
+            WHERE (:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')))
+            AND (:author IS NULL OR LOWER(b.author) LIKE LOWER(CONCAT('%', :author, '%')))
+            AND (:year IS NULL OR b.publishYear = :year)
+            AND (:available IS NULL OR :available = false OR
+                 b.status = org.example.library_management.model.BookStatus.AVAILABLE)
+            """)
+    Page<Book> searchBooks(
+            @Param("title") String title,
+            @Param("author") String author,
+            @Param("year") Integer year,
+            @Param("available") Boolean available,
+            Pageable pageable
+    );
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\repository\UserRepository.java =====
+package org.example.library_management.repository;
+
+import org.example.library_management.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByNationalId(String nationalId);
+    Optional<User> findByNationalId(String nationalId);
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\service\BookBorrowedService.java =====
+package org.example.library_management.service;
+
+import jakarta.transaction.Transactional;
+import org.example.library_management.dto.BookBorrowedRequest;
+import org.example.library_management.dto.BookBorrowedResponse;
+import org.example.library_management.dto.BookResponse;
+import org.example.library_management.exception.LibraryException;
+import org.example.library_management.mapper.BookBorrowedMapper;
+import org.example.library_management.mapper.BookMapper;
+import org.example.library_management.model.Book;
+import org.example.library_management.model.BookBorrowed;
+import org.example.library_management.model.BookStatus;
+import org.example.library_management.model.User;
+import org.example.library_management.repository.BookBorrowedRepository;
+import org.example.library_management.repository.BookRepository;
+import org.example.library_management.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+
+@Service
+public class BookBorrowedService {
+    private final BookBorrowedRepository bookBorrowedRepository;
+    private final BookBorrowedMapper bookBorrowedMapper;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
+    private final BookMapper bookMapper;
+
+    public BookBorrowedService(BookBorrowedRepository bookBorrowedRepository, BookBorrowedMapper bookBorrowedMapper, BookRepository bookRepository, UserRepository userRepository, BookMapper bookMapper) {
+        this.bookBorrowedRepository = bookBorrowedRepository;
+        this.bookBorrowedMapper = bookBorrowedMapper;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+        this.bookMapper = bookMapper;
+    }
+
+    @Transactional
+    public BookBorrowedResponse createBookBorrowed(BookBorrowedRequest request) {
+        Book book = bookRepository.findById(request.getBookId()).orElseThrow(() ->
+                new LibraryException(HttpStatus.NOT_FOUND, "book not found"));
+        if (book.getStatus().equals(BookStatus.BORROWED)) {
+            throw new LibraryException(HttpStatus.BAD_REQUEST, "book already borrowed");
+        } else if (book.getStatus().equals(BookStatus.DEACTIVATED)) {
+            throw new LibraryException(HttpStatus.BAD_REQUEST, "book is deactivated");
+        }
+        User user = userRepository.findByNationalId(request.getNationalId()).orElseThrow(() ->
+                new LibraryException(HttpStatus.NOT_FOUND, "user not found"));
+        BookBorrowed bookBorrowed = new BookBorrowed();
+        bookBorrowed.setBook(book);
+        bookBorrowed.setUser(user);
+        bookBorrowed.setBorrowStart(LocalDate.now());
+        bookBorrowedRepository.save(bookBorrowed);
+        book.setStatus(BookStatus.BORROWED);
+        return bookBorrowedMapper.toBookBorrowedResponse(bookBorrowed);
+    }
+
+    @Transactional
+    public BookBorrowedResponse returnBookBorrowed(Long bookId, String nationalId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new LibraryException(HttpStatus.NOT_FOUND, "book not found"));
+        if (!book.getStatus().equals(BookStatus.BORROWED)) {
+            throw new LibraryException(HttpStatus.BAD_REQUEST, "book is not borrowed");
+        }
+        User user = userRepository.findByNationalId(nationalId).orElseThrow(() -> new LibraryException(HttpStatus.NOT_FOUND, "user not found"));
+        BookBorrowed bookBorrowed = bookBorrowedRepository.findByBookAndStatus(bookId, nationalId).orElseThrow
+                (() -> new LibraryException(HttpStatus.NOT_FOUND, "bookBorrowed not found"));
+        bookBorrowed.setBorrowEnd(LocalDate.now());
+        book.setStatus(BookStatus.AVAILABLE);
+        bookBorrowedRepository.save(bookBorrowed);
+        bookRepository.save(book);
+        return bookBorrowedMapper.toBookBorrowedResponse(bookBorrowed);
+    }
+
+    public Page<BookResponse> searchBooks(String title, String author, Integer year, Boolean available, Pageable pageable) {
+        return bookRepository.searchBooks(title, author, year, available, pageable).map(bookMapper::toBookResponse);
+    }
+
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\service\BookService.java =====
+package org.example.library_management.service;
+
+import org.example.library_management.dto.BookRequest;
+import org.example.library_management.dto.BookResponse;
+import org.example.library_management.dto.BookUpdate;
+import org.example.library_management.exception.LibraryException;
+import org.example.library_management.mapper.BookMapper;
+import org.example.library_management.model.Book;
+import org.example.library_management.model.BookStatus;
+import org.example.library_management.repository.BookRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class BookService {
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
+
+    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+        this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
+    }
+    public BookResponse save(BookRequest bookRequest) {
+        Book book = bookMapper.toBook(bookRequest);
+        book.setStatus(BookStatus.AVAILABLE);
+        bookRepository.save(book);
+        return bookMapper.toBookResponse(book);
+    }
+    @Transactional
+    public BookResponse Update(Long id,BookUpdate bookUpdate) {
+        Book book = bookRepository.findById(id).orElseThrow(()->new LibraryException(HttpStatus.NOT_FOUND, "Book not found"));
+        bookMapper.updateBook(bookUpdate,book);
+        bookRepository.save(book);
+        return bookMapper.toBookResponse(book);
+    }
+    public void deActivate(Long id) {
+        Book book = bookRepository.findById(id).orElseThrow(()->new LibraryException(HttpStatus.NOT_FOUND, "Book not found"));
+        if (book.getStatus().equals(BookStatus.BORROWED)) {
+            throw  new LibraryException(HttpStatus.BAD_REQUEST, "Book has been borrowed");
+        }else if (book.getStatus().equals(BookStatus.DEACTIVATED)) {
+            throw  new LibraryException(HttpStatus.BAD_REQUEST, "Book has already deactivated");
+        }
+        book.setStatus(BookStatus.DEACTIVATED);
+        bookRepository.save(book);
+    }
+    public BookResponse findById(Long id) {
+        Book book = bookRepository.findById(id).orElseThrow(()->new LibraryException(HttpStatus.NOT_FOUND, "Book not found"));
+        return bookMapper.toBookResponse(book);
+    }
+    public List<BookResponse> findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn).stream().map(bookMapper::toBookResponse).toList();
+    }
+    public Page<BookResponse> findAll(int page, int size,String sortBy, String direction,String title) {
+        Sort sort =direction.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page,size,sort);
+        if (title!=null && !title.isBlank()) {
+            return bookRepository.findByTitleContainingIgnoreCase(title,pageable).map(bookMapper::toBookResponse);
+        }
+        return bookRepository.findAll(pageable).map(bookMapper::toBookResponse);
+    }
+
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\service\UserService.java =====
+package org.example.library_management.service;
+
+import jakarta.transaction.Transactional;
+import org.example.library_management.dto.UserRequest;
+import org.example.library_management.dto.UserResponse;
+import org.example.library_management.exception.LibraryException;
+import org.example.library_management.mapper.UserMapper;
+import org.example.library_management.model.User;
+import org.example.library_management.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
+    public UserResponse save(UserRequest userRequest) {
+        if (userRepository.existsByNationalId(userRequest.getNationalId())) {
+            throw new LibraryException(HttpStatus.BAD_REQUEST, "User with NationalId " + userRequest.getNationalId() + " exist");
+        }
+        User user = userMapper.toUser(userRequest);
+        userRepository.save(user);
+        return userMapper.toUserResponse(user);
+    }
+    @Transactional
+    public UserResponse update(String nationalId,UserRequest userRequest) {
+        User user = userRepository.findByNationalId(nationalId).orElseThrow(() -> new LibraryException
+                (HttpStatus.NOT_FOUND, "User With NationalId " + nationalId + " not found"));
+        userMapper.updateUser(userRequest, user);
+        userRepository.save(user);
+        return userMapper.toUserResponse(user);
+    }
+    public UserResponse findByNationalId(String nationalId) {
+        User user = userRepository.findByNationalId(nationalId).orElseThrow(()->new LibraryException
+                (HttpStatus.NOT_FOUND,"User with NationalId " + nationalId+ " not found"));
+        return userMapper.toUserResponse(user);
+    }
+    public Page<UserResponse> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userMapper::toUserResponse);
+    }
+
+}
+
+===== C:\desc\demo\library_management\src\main\java\org\example\library_management\LibraryManagementApplication.java =====
+package org.example.library_management;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class LibraryManagementApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(LibraryManagementApplication.class, args);
+    }
+
+}
+
+===== C:\desc\demo\library_management\src\main\resources\application.properties =====
+spring.application.name=library_management
+
+===== C:\desc\demo\library_management\src\test\java\org\example\library_management\LibraryManagementApplicationTests.java =====
+package org.example.library_management;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class LibraryManagementApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
+

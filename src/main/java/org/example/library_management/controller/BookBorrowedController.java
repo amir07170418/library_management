@@ -21,8 +21,8 @@ public class BookBorrowedController {
     public BookBorrowedResponse save(@Valid @RequestBody BookBorrowedRequest bookBorrowedRequest){
         return bookBorrowedService.createBookBorrowed(bookBorrowedRequest);
     }
-    @GetMapping
-    public BookBorrowedResponse returnBook(@RequestParam Long bookId, @RequestParam String nationalId){
+    @PatchMapping("/{bookId}/return")
+    public BookBorrowedResponse returnBook(@PathVariable Long bookId, @RequestParam String nationalId){
         return bookBorrowedService.returnBookBorrowed(bookId, nationalId);
     }
     @GetMapping("/search")

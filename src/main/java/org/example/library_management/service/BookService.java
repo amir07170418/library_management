@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class BookService {
     private final BookRepository bookRepository;
@@ -52,9 +54,8 @@ public class BookService {
         Book book = bookRepository.findById(id).orElseThrow(()->new LibraryException(HttpStatus.NOT_FOUND, "Book not found"));
         return bookMapper.toBookResponse(book);
     }
-    public BookResponse findByIsbn(String isbn) {
-        Book book=bookRepository.findByIsbn(isbn).orElseThrow(()->new LibraryException(HttpStatus.NOT_FOUND, "Book not found"));
-        return bookMapper.toBookResponse(book);
+    public List<BookResponse> findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn).stream().map(bookMapper::toBookResponse).toList();
     }
     public Page<BookResponse> findAll(int page, int size,String sortBy, String direction,String title) {
         Sort sort =direction.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();

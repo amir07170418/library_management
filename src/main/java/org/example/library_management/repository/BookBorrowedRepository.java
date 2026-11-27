@@ -12,7 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface BookBorrowedRepository extends JpaRepository<BookBorrowed, Long> {
-    @Query("select b FROM BookBorrowed b where b.book.id=:bookId AND b.book.status=:status AND b.user.nationalId=:nationalId")
-    Optional<BookBorrowed> findByBookAndStatus(@Param("bookId") Long bookId
-            , @Param("status") BookStatus status,@Param("nationalId")  String nationalId);
+    @Query("select b FROM BookBorrowed b where b.book.id=:bookId AND " +
+            "b.book.status=org.example.library_management.model.BookStatus.BORROWED AND" +
+            " b.user.nationalId=:nationalId AND b.borrowEnd=NULL ")
+    Optional<BookBorrowed> findByBookAndStatus(@Param("bookId") Long bookId,@Param("nationalId")  String nationalId);
 }

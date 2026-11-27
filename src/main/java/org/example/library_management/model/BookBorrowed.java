@@ -13,7 +13,7 @@ public class BookBorrowed {
     @JoinColumn(name = "book_id")
     private Book book;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "user_id")
     private User user;
     private LocalDate borrowStart;
     private LocalDate borrowEnd;

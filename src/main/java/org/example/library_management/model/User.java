@@ -9,7 +9,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -18,7 +18,7 @@ public class User {
     @OneToMany(fetch =  FetchType.LAZY,mappedBy = "user")
     private Set<BookBorrowed> borrowedBooks;
 
-    public User(int id, String firstName, String lastName, String phoneNumber, String nationalId
+    public User(Long id, String firstName, String lastName, String phoneNumber, String nationalId
             , Set<BookBorrowed> borrowedBooks) {
         this.id = id;
         this.firstName = firstName;
@@ -31,11 +31,11 @@ public class User {
     public User() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

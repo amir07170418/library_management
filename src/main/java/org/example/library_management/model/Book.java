@@ -93,12 +93,12 @@ public class Book {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(isbn, book.isbn);
+        return Objects.equals(id, book.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(isbn);
+        return Objects.hashCode(id);
     }
 
     @Override

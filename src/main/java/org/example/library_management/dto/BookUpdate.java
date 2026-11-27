@@ -9,12 +9,15 @@ public class BookUpdate {
     @NotBlank
     private String author;
     @NotNull
-    private Integer publisher;
+    private Integer publishYear;
 
-    public BookUpdate(String title, String author, Integer publisher) {
+    public BookUpdate(String title, String author, Integer publishYear) {
         this.title = title;
         this.author = author;
-        this.publisher = publisher;
+        this.publishYear = publishYear;
+    }
+
+    public BookUpdate() {
     }
 
     public String getTitle() {
@@ -33,12 +36,12 @@ public class BookUpdate {
         this.author = author;
     }
 
-    public Integer getPublisher() {
-        return publisher;
+    public Integer getPublishYear() {
+        return publishYear;
     }
 
-    public void setPublisher(Integer publisher) {
-        this.publisher = publisher;
+    public void setPublishYear(Integer publishYear) {
+        this.publishYear = publishYear;
     }
 
     @Override
@@ -46,7 +49,7 @@ public class BookUpdate {
         return "BookUpdate{" +
                 "title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", publisher=" + publisher +
+                ", publishYear=" + publishYear +
                 '}';
     }
 }
